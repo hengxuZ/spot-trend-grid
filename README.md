@@ -25,7 +25,8 @@ api_secret='你的secret'
 dingding_token = '申请钉钉群助手的token'   # 强烈建议您使用 （若不会申请，请加我个人微信）
 ```
 
-如果你还没有币安账号： [注册页面](https://www.binancezh.io/zh-CN/register?ref=OW7U53AB)返佣20%
+如果你还没有币安账号： [注册页面](https://www.binancezh.io/zh-CN/register?ref=OW7U53AB)交易返佣40%（系统返佣20%，id私发给我，微信每周返佣20%，长期有效）
+
 [免翻墙地址](https://www.binancezh.cc/zh-CN/register?ref=OW7U53AB)
 
 申请api_key地址: [币安API管理页面](https://www.binance.com/cn/usercenter/settings/api-management)
