@@ -26,6 +26,7 @@ dingding_token = '申请钉钉群助手的token'   # 强烈建议您使用 （�
 ```
 
 如果你还没有币安账号： [注册页面](https://www.binancezh.io/zh-CN/register?ref=OW7U53AB)返佣20%
+[免翻墙地址](https://www.binancezh.cc/zh-CN/register?ref=OW7U53AB)
 
 申请api_key地址: [币安API管理页面](https://www.binance.com/cn/usercenter/settings/api-management)
 
