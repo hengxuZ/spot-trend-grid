@@ -80,6 +80,29 @@ class BinanceAPI(object):
 - 第一版本现货账户保证有足够的U
 - 第二版本现货、合约账户保证有足够的U
    
+- 由于补仓比率是动态的，目前默认最小为5%。如果您认为过大，建议您修改文件夹data下的RunbetData.py文件
+```加粗的数值均可调整，适合你风险系数的比率
+    def set_ratio(self,symbol):
+        '''修改补仓止盈比率'''
+        data_json = self._get_json_data()
+        ratio_24hr = binan.get_ticker_24hour(symbol) #
+        index = abs(ratio_24hr)
+
+        if abs(ratio_24hr) >  **6** : # 今日24小时波动比率
+            if ratio_24hr > 0 : # 单边上涨，补仓比率不变
+                data_json['config']['profit_ratio'] =  **7** + self.get_step()/4  #
+                data_json['config']['double_throw_ratio'] = **5**
+            else: # 单边下跌
+                data_json['config']['double_throw_ratio'] =  **7** + self.get_step()/4
+                data_json['config']['profit_ratio'] =  **5**
+
+        else: # 系数内震荡行情
+
+            data_json['config']['double_throw_ratio'] = **5** + self.get_step() / 4
+            data_json['config']['profit_ratio'] = **5** + self.get_step() / 4
+        self._modify_json_data(data_json)
+```
+
 ### 钉钉预警
 
 如果您想使用钉钉通知，那么你需要创建一个钉钉群，然后加入自定义机器人。最后将机器人的token粘贴到authorization文件中的dingding_token
