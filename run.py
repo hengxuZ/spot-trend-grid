@@ -42,7 +42,7 @@ class Run_Main():
                 else:
                     res = msg.sell_market_msg(self.coinType, runbet.get_quantity(False))
                     if res['orderId']:
-                        runbet.set_ratio(runbet.get_cointype())
+                        # runbet.set_ratio(runbet.get_cointype()) 启动动态改变比率
                         runbet.modify_price(cur_market_price, step - 1)
                         time.sleep(60*2)  # 挂单后，停止运行1分钟
                     else:
