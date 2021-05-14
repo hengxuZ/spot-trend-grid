@@ -34,7 +34,7 @@ dingding_token = '申请钉钉群助手的token'   # 强烈建议您使用 （�
 申请api_key地址: [币安API管理页面](https://www.binance.com/cn/usercenter/settings/api-management)
 
 
-2. 修改data/data.json配置文件  根据
+2. 修改data/data.json配置文件  （参数详细解读->[一定要看](https://github.com/hengxuZ/binance-quantization/blob/master/dev-ReadMe.md)）
 ```
 {
     "runBet": {
