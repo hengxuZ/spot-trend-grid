@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*
-import requests, time, hmac, hashlib
-from app.authorization import recv_window,api_secret,api_key
-
+import requests, time, hmac, hashlib,json,os
+from app.authorization import dingding_token, recv_window,api_secret,api_key
+# from app.dingding import Message
+# linux
+data_path = os.getcwd()+"/data/data.json"
+# windows
+# data_path = os.getcwd() + "\data\data.json"
 try:
     from urllib import urlencode
 # python3
@@ -10,6 +14,7 @@ except ImportError:
 
 class BinanceAPI(object):
     BASE_URL = "https://www.binance.com/api/v1"
+    FUTURE_URL = "https://fapi.binance.com"
     BASE_URL_V3 = "https://api.binance.com/api/v3"
     PUBLIC_URL = "https://www.binance.com/exchange/public/product"
 
@@ -75,7 +80,37 @@ class BinanceAPI(object):
         params = {"symbol":symbol}
         time.sleep(1)
         return self._get(path, params)
-        
+
+    def get_future_positionInfo(self, symbol):
+        '''当前期货持仓交易对信息'''
+        path = "%s/fapi/v2/positionRisk" % self.FUTURE_URL
+        params = {"symbol":symbol}
+        time.sleep(1)
+        return self._get(path, params)
+
+    def dingding_warn(self,text):
+        headers = {'Content-Type': 'application/json;charset=utf-8'}
+        api_url = "https://oapi.dingtalk.com/robot/send?access_token=%s" % dingding_token
+        json_text = json_text = {
+            "msgtype": "text",
+            "at": {
+                "atMobiles": [
+                    "11111"
+                ],
+                "isAtAll": False
+            },
+            "text": {
+                "content": text
+            }
+        }
+        requests.post(api_url, json.dumps(json_text), headers=headers).content
+    def get_cointype(self):
+        '''读取json文件'''
+        tmp_json = {}
+        with open(data_path, 'r') as f:
+            tmp_json = json.load(f)
+            f.close()
+        return tmp_json["config"]["cointype"]
     ### ----私有函数---- ###
     def _order(self, market, quantity, side, price=None):
         '''
@@ -100,10 +135,28 @@ class BinanceAPI(object):
 
         return params
 
+    def _get(self, path, params={}):
+        params.update({"recvWindow": recv_window})
+        query = urlencode(self._sign(params))
+        url = "%s?%s" % (path, query)
+        header = {"X-MBX-APIKEY": self.key}
+        res = requests.get(url, headers=header,timeout=30, verify=True).json()
+        if isinstance(res,dict):
+            if 'code' in res:
+                error_info = "报警：币种{coin},请求异常.错误原因{info}".format(coin=self.get_cointype(), info=str(res))
+                self.dingding_warn(error_info)
+        return res
+
     def _get_no_sign(self, path, params={}):
         query = urlencode(params)
         url = "%s?%s" % (path, query)
-        return requests.get(url, timeout=180, verify=True).json()
+        res = requests.get(url, timeout=180, verify=True).json()
+        if isinstance(res,dict):
+            if 'code' in res:
+                error_info = "报警：币种{coin},请求异常.错误原因{info}".format(coin=self.get_cointype(), info=str(res))
+                self.dingding_warn(error_info)
+
+        return res
 
     def _sign(self, params={}):
         data = params.copy()
@@ -122,8 +175,15 @@ class BinanceAPI(object):
         query = urlencode(self._sign(params))
         url = "%s" % (path)
         header = {"X-MBX-APIKEY": self.key}
-        return requests.post(url, headers=header, data=query, \
+        res = requests.post(url, headers=header, data=query, \
             timeout=180, verify=True).json()
+
+        if isinstance(res,dict):
+            if 'code' in res:
+                error_info = "报警：币种{coin},请求异常.错误原因{info}".format(coin=self.get_cointype(), info=str(res))
+                self.dingding_warn(error_info)
+
+        return res
 
     def _format(self, price):
         return "{:.8f}".format(price)

@@ -1,7 +1,7 @@
 from app.BinanceAPI import BinanceAPI
 from app.authorization import api_key,api_secret
 from data.runBetData import RunBetData
-import os,json
+import time,os,json
 runbet = RunBetData()
 binan = BinanceAPI(api_key,api_secret)
 
@@ -52,6 +52,28 @@ class CalcIndex:
     #             next_ma10+=float(data[i][4])
 
     #     return [self.roundNum(last_ma10/10),self.roundNum(next_ma10/10)]
+
+    def is_open_position(self,symbol):
+        '''
+
+        :return: 0 空仓 1 有多单 -1 有空单
+        '''
+        tmp = binan.get_future_positionInfo(symbol)
+        time.sleep(2)
+        for item in tmp:  # 遍历是有仓位
+            if item['positionSide'] == "SHORT" and float(item['positionAmt']) != 0.0:
+                return [-1,item['positionAmt']]
+            if item['positionSide'] == "LONG" and float(item['positionAmt']) != 0.0:
+                return [1,item['positionAmt']]
+        return [0,item['positionAmt']]
+
+    def get_earn(self):
+        tmp = binan.get_future_positionInfo(runbet.get_cointype())
+        for item in tmp:  # 遍历是有仓位
+            if item['positionSide'] == "SHORT" and float(item['positionAmt']) != 0.0:
+                return float(item['unRealizedProfit'])
+            if item['positionSide'] == "LONG" and float(item['positionAmt']) != 0.0:
+                return float(item['unRealizedProfit'])
 
     def calcSlopeMA5(self,symbol,interval,point):
         '''
