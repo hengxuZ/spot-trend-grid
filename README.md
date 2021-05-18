@@ -32,34 +32,20 @@ dingding_token = '申请钉钉群助手的token'   # 强烈建议您使用 （�
 交易返佣计算公式：交易金额1W元 * 手续费比率0.1% * 0.02 = 2元（交易1w节约2元）
 
 申请api_key地址: [币安API管理页面](https://www.binance.com/cn/usercenter/settings/api-management)
-
-
-2. 修改data/data.json配置文件  （参数详细解读->[一定要看](https://github.com/hengxuZ/binance-quantization/blob/master/dev-ReadMe.md)）
-```
-{
-    "runBet": {
-        "next_buy_price": 350,      <- 下次开仓价   （你下一仓位买入价）
-      
-        "grid_sell_price": 375      <- 当前止盈价  （你的当前仓位卖出价）
-        "step":0                    <- 当前仓位  （0:仓位为空）
-    },
-    "config": {
-        "profit_ratio": 5,         <- 止盈比率      （卖出价调整比率。如：设置为5，当前买入价为100，那么下次卖出价为105）
-        "double_throw_ratio": 5,   <- 补仓比率      （买入价调整比率。如：设置为5，当前买入价为100，那么下次买入价为95）
-        "cointype": "ETHUSDT",     <- 交易对        （你要进行交易的交易对，请参考币安现货。如：BTC 填入 BTC/USDT）
-        "quantity": [1,2,3]        <- 交易数量       (第一手买入1,第二手买入2...超过第三手以后的仓位均按照最后一位数量(3)买入)
-        
-    }
-}
-
-```
-3. 安装依赖包
+2. 安装依赖包
 '''
 pip install requests
 '''
+
+3. 修改data/data.json配置文件  （参数详细解读->[一定要看](https://github.com/hengxuZ/binance-quantization/blob/master/dev-ReadMe.md)）
+```
+python3 create_data.py 
+根据提示输入对应内容
+```
+
 4. 运行主文件
 ```
-# python eth-run.py 这是带有钉钉通知的主文件(推荐使用钉钉模式启动👍)
+# nohup python3 run.py > run.log &  #后台挂载 程序买卖、异常会通过钉钉通知(推荐使用钉钉模式启动👍)
 ```
 
 如果您不想那么麻烦，又是python、linux 服务器。可以使用下面链接注册派网。体验网格交易
