@@ -172,11 +172,10 @@ class BinanceAPI(object):
 
     def _post(self, path, params={}):
         params.update({"recvWindow": recv_window})
-        query = urlencode(self._sign(params))
+        query = self._sign(params)
         url = "%s" % (path)
         header = {"X-MBX-APIKEY": self.key}
-        res = requests.post(url, headers=header, data=query, \
-            timeout=180, verify=True).json()
+        res = requests.post(url, headers=header, data=query, timeout=180, verify=True).json()
 
         if isinstance(res,dict):
             if 'code' in res:
