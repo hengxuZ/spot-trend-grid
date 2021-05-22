@@ -12,7 +12,7 @@ class Message:
         try:
             res = BinanceAPI(api_key,api_secret).buy_market(market, quantity)
             if res['orderId']:
-                buy_info = "报警：币种为：{cointype}。买单量为：{num}".format(cointype=market,num=quantity)
+                buy_info = "报警：币种为：{cointype}。买单量为：{num}.买单价格为：{price}".format(cointype=market,num=quantity,price=float(res['fills'][0]['price']))
                 self.dingding_warn(buy_info)
                 return res
         except BaseException as e:

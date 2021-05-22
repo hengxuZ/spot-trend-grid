@@ -31,7 +31,7 @@ class Run_Main():
             if grid_buy_price >= cur_market_price and index.calcAngle(self.coinType,"5m",False,right_size):   # 是否满足买入价
                 res = msg.buy_market_msg(self.coinType, quantity)
                 if res['orderId']: # 挂单成功
-                    runbet.modify_price(cur_market_price, step+1) #修改data.json中价格、当前步数
+                    runbet.modify_price(float(res['fills'][0]['price']), step+1) #修改data.json中价格、当前步数
                     time.sleep(60*2) # 挂单后，停止运行1分钟
                 else:
                     break
@@ -43,7 +43,7 @@ class Run_Main():
                     res = msg.sell_market_msg(self.coinType, runbet.get_quantity(False))
                     if res['orderId']:
                         # runbet.set_ratio(runbet.get_cointype()) 启动动态改变比率
-                        runbet.modify_price(cur_market_price, step - 1)
+                        runbet.modify_price(float(res['fills'][0]['price']), step - 1)
                         time.sleep(60*2)  # 挂单后，停止运行1分钟
                     else:
                         break
@@ -60,6 +60,7 @@ if __name__ == "__main__":
         msg.dingding_warn(error_info)
 
 # 调试看报错运行下面，正式运行用上面       
-# if __name__ == "__main__":       
-#     instance = Run_Main()    
-#     instance.loop_run()
+# if __name__ == "__main__":
+#     instance = Run_Main()
+#     cur_market_price = binan.get_ticker_price(runbet.get_cointype())  # 当前交易对市价
+#     runbet.modify_price(cur_market_price,0)
