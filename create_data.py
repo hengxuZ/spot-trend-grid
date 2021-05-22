@@ -39,8 +39,8 @@ if __name__ == "__main__":
     print("正在加速运算中...")
     cointype = str(symbol).upper() + "USDT"
     cur_market_price = binan.get_ticker_price(cointype) #当前市价
-    [is_open, position] = index.is_open_position(cointype) #最小位数
-    buy_size = len(position.split(".")[1]) if position.find(".") != -1 else 0
+    #[is_open, position] = index.is_open_position(cointype) #最小位数
+    buy_size = len(str(cur_market_price).split(".")[1]) if str(cur_market_price).find(".") != -1 else 0
     tmp_data['config']['cointype'] = cointype
 
     print("请输入：您要间隔的买卖的比率。例如：5。（此处5代表这5%）")
