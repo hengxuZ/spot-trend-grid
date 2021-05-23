@@ -59,7 +59,7 @@ class CalcIndex:
         :return: 0 空仓 1 有多单 -1 有空单
         '''
         tmp = binan.get_future_positionInfo(symbol)
-        time.sleep(2)
+
         for item in tmp:  # 遍历是有仓位
             if item['positionSide'] == "SHORT" and float(item['positionAmt']) != 0.0:
                 return [-1,item['positionAmt']]

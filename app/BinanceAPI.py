@@ -85,7 +85,6 @@ class BinanceAPI(object):
         '''当前期货持仓交易对信息'''
         path = "%s/fapi/v2/positionRisk" % self.FUTURE_URL
         params = {"symbol":symbol}
-        time.sleep(1)
         return self._get(path, params)
 
     def dingding_warn(self,text):
