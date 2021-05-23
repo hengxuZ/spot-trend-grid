@@ -25,13 +25,17 @@ api_secret='你的secret'
 dingding_token = '申请钉钉群助手的token'   # 强烈建议您使用 （若不会申请，请加我个人微信）
 ```
 
-如果你还没有币安账号： [注册页面](https://www.binancezh.io/zh-CN/register?ref=OW7U53AB)[免翻墙地址](https://www.binancezh.cc/zh-CN/register?ref=OW7U53AB)交易返佣20% 注册立刻返现10元，充值交易再返现10元。
+如果你还没有币安账号： [注册页面](https://www.binancezh.io/zh-CN/register?ref=OW7U53AB)  [免翻墙地址](https://www.binancezh.cc/zh-CN/register?ref=OW7U53AB)
+交易返佣20%  注册立刻返现5元，充值交易再返现15元（下方加微信返现）。
 
 或者可以注册火币账号：[注册页面](https://www.huobi.ms/zh-cn/topic/double-reward/?invite_code=w2732223)交易返佣15% 注册立刻返现5元，充值并且交易再返现10元
 
-交易返佣计算公式：交易金额1W元 * 手续费比率0.1% * 0.02 = 2元（交易1w节约2元）
+>交易返佣计算公式：交易金额1W元 * 手续费比率0.1% * 0.02 = 2元（交易1w节约2元）
 
 申请api_key地址: [币安API管理页面](https://www.binance.com/cn/usercenter/settings/api-management)
+>申请api_key时一定要勾选上 
+1.允许现货及杠杆交易 
+2.允许合约 
 2. 安装依赖包
 '''
 pip install requests
