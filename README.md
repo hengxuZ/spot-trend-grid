@@ -1,6 +1,7 @@
 
 ### 🎉第二版本🎉 （现货趋势网格）
 
+如果您对后面的行情看跌，建议您使用 v4版 [合约开空趋势网格](https://github.com/hengxuZ/future-short-grid)
 ---
 
 ### 介绍
