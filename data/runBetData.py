@@ -43,6 +43,12 @@ class RunBetData:
         data_json = self._get_json_data()
         return data_json["config"]["cointype"]
 
+    def get_record_price(self):
+        '''卖出后，step减一后，再读取上次买入的价格'''
+        data_json = self._get_json_data()
+        cur_step = self.get_step() - 1
+        return data_json['runBet']['recorded_price'][cur_step]
+
     def get_quantity(self,exchange_method=True):
         '''
         :param exchange: True 代表买入，取买入的仓位 False：代表卖出，取卖出应该的仓位
@@ -79,25 +85,30 @@ class RunBetData:
         data_json = self._get_json_data()
         return data_json['config']['double_throw_ratio']
 
-    
+    def set_record_price(self,value):
+        '''记录交易价格'''
+        data_json = self._get_json_data()
+        data_json['runBet']['recorded_price'].append(value)
+        self._modify_json_data(data_json)
+
     def set_ratio(self,symbol):
         '''修改补仓止盈比率'''
         data_json = self._get_json_data()
         ratio_24hr = binan.get_ticker_24hour(symbol) #
         index = abs(ratio_24hr)
 
-        if abs(ratio_24hr) >  6 : # 这是单边走势情况 只改变一方的比率
+        if abs(ratio_24hr) >  10 : # 这是单边走势情况 只改变一方的比率
             if ratio_24hr > 0 : # 单边上涨，补仓比率不变
-                data_json['config']['profit_ratio'] =  7 + self.get_step()/4  #
-                data_json['config']['double_throw_ratio'] = 5
+                data_json[symbol]['config']['profit_ratio'] = 6 + self.get_step() #
+                data_json[symbol]['config']['double_throw_ratio'] = 5 - self.get_step()/4 #
             else: # 单边下跌
-                data_json['config']['double_throw_ratio'] =  7 + self.get_step()/4
-                data_json['config']['profit_ratio'] =  5
+                data_json[symbol]['config']['double_throw_ratio'] =  6 + self.get_step()
+                data_json[symbol]['config']['profit_ratio'] =  5 - self.get_step()/4
 
         else: # 系数内震荡行情
 
-            data_json['config']['double_throw_ratio'] = 5 + self.get_step() / 4
-            data_json['config']['profit_ratio'] = 5 + self.get_step() / 4
+            data_json['config']['double_throw_ratio'] = 3 +self.get_step()/4
+            data_json['config']['profit_ratio'] = 3 + self.get_step()/4
         self._modify_json_data(data_json)
 
 

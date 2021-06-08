@@ -2,7 +2,8 @@
     "runBet": {
         "next_buy_price": 277.0558,
         "grid_sell_price": 288.3642,
-        "step": 0
+        "step": 0,
+        "recorded_price": []
     },
     "config": {
         "profit_ratio": 2.0,
