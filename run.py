@@ -47,7 +47,8 @@ class Run_Main():
                     if res['orderId']:
                         runbet.set_ratio(runbet.get_cointype()) #启动动态改变比率
                         runbet.modify_price(runbet.get_record_price(), step - 1)
-                        time.sleep(60*2)  # 挂单后，停止运行1分钟
+                        runbet.remove_record_price()
+                        time.sleep(60*1)  # 挂单后，停止运行1分钟
                     else:
                         break
             else:

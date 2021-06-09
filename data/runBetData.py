@@ -69,7 +69,13 @@ class RunBetData:
     def get_step(self):
         data_json = self._get_json_data()
         return data_json["runBet"]["step"]
-    
+
+    def remove_record_price(self):
+        '''记录交易价格'''
+        data_json = self._get_json_data()
+        del data_json['runBet']['recorded_price'][-1]
+        self._modify_json_data(data_json)
+
     def get_ratio_coefficient(self):
         '''获取倍率系数'''
         data_json = self._get_json_data()
@@ -97,18 +103,18 @@ class RunBetData:
         ratio_24hr = binan.get_ticker_24hour(symbol) #
         index = abs(ratio_24hr)
 
-        if abs(ratio_24hr) >  10 : # 这是单边走势情况 只改变一方的比率
+        if abs(ratio_24hr) >  8 : # 这是单边走势情况 只改变一方的比率
             if ratio_24hr > 0 : # 单边上涨，补仓比率不变
-                data_json[symbol]['config']['profit_ratio'] = 6 + self.get_step() #
-                data_json[symbol]['config']['double_throw_ratio'] = 5 - self.get_step()/4 #
+                data_json['config']['profit_ratio'] = 5 + self.get_step() #
+                data_json['config']['double_throw_ratio'] = 5 - self.get_step()/4 #
             else: # 单边下跌
-                data_json[symbol]['config']['double_throw_ratio'] =  6 + self.get_step()
-                data_json[symbol]['config']['profit_ratio'] =  5 - self.get_step()/4
+                data_json['config']['double_throw_ratio'] =  5 + self.get_step()
+                data_json['config']['profit_ratio'] =  5 - self.get_step()/4
 
         else: # 系数内震荡行情
 
-            data_json['config']['double_throw_ratio'] = 3 +self.get_step()/4
-            data_json['config']['profit_ratio'] = 3 + self.get_step()/4
+            data_json['config']['double_throw_ratio'] = 2 +self.get_step()/4
+            data_json['config']['profit_ratio'] = 2 + self.get_step()/4
         self._modify_json_data(data_json)
 
 
