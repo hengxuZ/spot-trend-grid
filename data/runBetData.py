@@ -121,7 +121,7 @@ class RunBetData:
     # 买入后，修改 补仓价格 和 网格平仓价格以及步数
     def modify_price(self, deal_price,step):
         data_json = self._get_json_data()
-        right_size = len(str(deal_price).split(".")[1])
+        right_size = len(str(deal_price).split(".")[1]) + 2
         data_json["runBet"]["next_buy_price"] = round(deal_price * (1 - data_json["config"]["double_throw_ratio"] / 100), right_size) # 保留2位小数
         data_json["runBet"]["grid_sell_price"] = round(deal_price * (1 + data_json["config"]["profit_ratio"] / 100), right_size)
         data_json["runBet"]["step"] = step
