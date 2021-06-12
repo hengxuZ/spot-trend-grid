@@ -51,6 +51,7 @@ if __name__ == "__main__":
     tmp_data['runBet']['next_buy_price'] = cur_market_price * (100 - float(ratio)) / 100
     tmp_data['runBet']['grid_sell_price'] = cur_market_price * (100 + float(ratio)) / 100
 
+    tmp_data['runBet']['recorded_price'] = []
     print("请输入您单次计划花费的USDT量。请输入大于10的数（单次下注最小10U）")
     const_usdt = input()
     quantity = round(float(const_usdt) / cur_market_price, buy_size)

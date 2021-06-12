@@ -45,7 +45,7 @@ class Run_Main():
                 else:
                     last_price = runbet.get_record_price()
                     sell_amount = runbet.get_quantity(False)
-                    porfit_usdt = (last_price - cur_market_price) / sell_amount
+                    porfit_usdt = (last_price - cur_market_price) * sell_amount
                     res = msg.sell_market_msg(self.coinType, runbet.get_quantity(False),porfit_usdt)
                     if res['orderId']:
                         runbet.set_ratio(runbet.get_cointype()) #启动动态改变比率
