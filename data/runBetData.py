@@ -97,33 +97,35 @@ class RunBetData:
         data_json['runBet']['recorded_price'].append(value)
         self._modify_json_data(data_json)
 
-    def set_ratio(self,symbol):
+    def get_atr(self,symbol,interval='4h',kline_num=20):
+
+        data = binan.get_klines(symbol, interval, kline_num)
+        percent_total = 0
+        for i in range(len(data)):
+            percent_total = abs(float(data[i][3]) - float(data[i][2])) / float(data[i][4]) + percent_total
+
+        return round(percent_total/kline_num * 100,1)
+
+    def set_ratio(self):
         '''修改补仓止盈比率'''
         data_json = self._get_json_data()
-        ratio_24hr = binan.get_ticker_24hour(symbol) #
-        index = abs(ratio_24hr)
-
-        if abs(ratio_24hr) >  8 : # 这是单边走势情况 只改变一方的比率
-            if ratio_24hr > 0 : # 单边上涨，补仓比率不变
-                data_json['config']['profit_ratio'] = 2 + self.get_step() #
-                data_json['config']['double_throw_ratio'] = 2 + self.get_step()/4 #
-            else: # 单边下跌
-                data_json['config']['double_throw_ratio'] =  2 + self.get_step()
-                data_json['config']['profit_ratio'] =  2 + self.get_step()/4
-
-        else: # 系数内震荡行情
-
-            data_json['config']['double_throw_ratio'] = 2 +self.get_step()/4
-            data_json['config']['profit_ratio'] = 2 + self.get_step()/4
+        atr_value = self.get_atr(self.get_cointype())
+        data_json['config']['double_throw_ratio'] = atr_value
+        data_json['config']['profit_ratio'] = atr_value
         self._modify_json_data(data_json)
 
 
     # 买入后，修改 补仓价格 和 网格平仓价格以及步数
-    def modify_price(self, deal_price,step):
+    def modify_price(self, deal_price,step,market_price):
         data_json = self._get_json_data()
-        right_size = len(str(deal_price).split(".")[1]) + 2
-        data_json["runBet"]["next_buy_price"] = round(deal_price * (1 - data_json["config"]["double_throw_ratio"] / 100), right_size) # 保留2位小数
-        data_json["runBet"]["grid_sell_price"] = round(deal_price * (1 + data_json["config"]["profit_ratio"] / 100), right_size)
+        data_json["runBet"]["next_buy_price"] = round(deal_price * (1 - data_json["config"]["double_throw_ratio"] / 100), 6) # 默认保留6位小数
+        data_json["runBet"]["grid_sell_price"] = round(deal_price * (1 + data_json["config"]["profit_ratio"] / 100), 6)
+        #  如果修改的价格满足立刻卖出则，再次更改
+        if data_json["runBet"]["future_buy_price"] < market_price:
+            data_json["runBet"]["future_buy_price"] = round( market_price * (1 + data_json["config"]["profit_ratio"] / 100), 6)
+        elif data_json["runBet"]["future_sell_price"] > market_price:
+            data_json["runBet"]["future_sell_price"] = round(market_price * (1 - data_json["config"]["double_throw_ratio"] / 100), 6)
+
         data_json["runBet"]["step"] = step
         self._modify_json_data(data_json)
         print("修改后的补仓价格为:{double}。修改后的网格价格为:{grid}".format(double=data_json["runBet"]["next_buy_price"],

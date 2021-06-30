@@ -39,8 +39,8 @@ if __name__ == "__main__":
     print("正在加速运算中...")
     cointype = str(symbol).upper() + "USDT"
     cur_market_price = binan.get_ticker_price(cointype) #当前市价
-    [is_open, position] = index.is_open_position(cointype) #最小位数
-    buy_size = len(position.split(".")[1]) if position.find(".") != -1 else 0
+    # [is_open, position] = index.is_open_position(cointype) #最小位数
+    # buy_size = len(position.split(".")[1]) if position.find(".") != -1 else 0
     tmp_data['config']['cointype'] = cointype
 
     print("请输入：您要间隔的买卖的比率。例如：5。（此处5代表这5%）")
@@ -52,9 +52,8 @@ if __name__ == "__main__":
     tmp_data['runBet']['grid_sell_price'] = cur_market_price * (100 + float(ratio)) / 100
 
     tmp_data['runBet']['recorded_price'] = []
-    print("请输入您单次计划花费的USDT量。请输入大于10的数（单次下注最小10U）")
-    const_usdt = input()
-    quantity = round(float(const_usdt) / cur_market_price, buy_size)
+    print("请输入您单次购买{num}量。（单次下注最小10U,请通过app或计算器计算一下）".format(num=cointype))
+    quantity = input()
     tmp_data["config"]["quantity"].append(quantity)
 
     runbet._modify_json_data(tmp_data)

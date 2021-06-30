@@ -34,14 +34,14 @@ class Run_Main():
                     success_price = float(res['fills'][0]['price'])
                     runbet.set_ratio(runbet.get_cointype())
                     runbet.set_record_price(success_price)
-                    runbet.modify_price(success_price, step+1) #修改data.json中价格、当前步数
+                    runbet.modify_price(success_price, step+1,cur_market_price) #修改data.json中价格、当前步数
                     time.sleep(60*2) # 挂单后，停止运行1分钟
                 else:
                     break
 
             elif grid_sell_price < cur_market_price and index.calcAngle(self.coinType,"5m",True,right_size):  # 是否满足卖出价
                 if step==0: # setp=0 防止踏空，跟随价格上涨
-                    runbet.modify_price(grid_sell_price,step)
+                    runbet.modify_price(grid_sell_price,step,cur_market_price)
                 else:
                     last_price = runbet.get_record_price()
                     sell_amount = runbet.get_quantity(False)
@@ -49,7 +49,7 @@ class Run_Main():
                     res = msg.sell_market_msg(self.coinType, runbet.get_quantity(False),porfit_usdt)
                     if res['orderId']:
                         runbet.set_ratio(runbet.get_cointype()) #启动动态改变比率
-                        runbet.modify_price(runbet.get_record_price(), step - 1)
+                        runbet.modify_price(runbet.get_record_price(), step - 1,cur_market_price)
                         runbet.remove_record_price()
                         time.sleep(60*1)  # 挂单后，停止运行1分钟
                     else:
