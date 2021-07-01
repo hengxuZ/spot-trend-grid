@@ -118,13 +118,13 @@ class RunBetData:
     # 买入后，修改 补仓价格 和 网格平仓价格以及步数
     def modify_price(self, deal_price,step,market_price):
         data_json = self._get_json_data()
-        data_json["runBet"]["next_buy_price"] = round(deal_price * (1 + data_json["config"]["double_throw_ratio"] / 100), 6) # 默认保留6位小数
-        data_json["runBet"]["grid_sell_price"] = round(deal_price * (1 - data_json["config"]["profit_ratio"] / 100), 6)
+        data_json["runBet"]["next_buy_price"] = round(deal_price * (1 - data_json["config"]["double_throw_ratio"] / 100), 6) # 默认保留6位小数
+        data_json["runBet"]["grid_sell_price"] = round(deal_price * (1 + data_json["config"]["profit_ratio"] / 100), 6)
         #  如果修改的价格满足立刻卖出则，再次更改
         if data_json["runBet"]["next_buy_price"] > market_price:
-            data_json["runBet"]["next_buy_price"] = round( market_price * (1 + data_json["config"]["profit_ratio"] / 100), 6)
+            data_json["runBet"]["next_buy_price"] = round( market_price * (1 - data_json["config"]["double_throw_ratio"] / 100), 6)
         elif data_json["runBet"]["grid_sell_price"] < market_price:
-            data_json["runBet"]["grid_sell_price"] = round(market_price * (1 - data_json["config"]["double_throw_ratio"] / 100), 6)
+            data_json["runBet"]["grid_sell_price"] = round(market_price * (1 + data_json["config"]["profit_ratio"] / 100), 6)
 
         data_json["runBet"]["step"] = step
         self._modify_json_data(data_json)
