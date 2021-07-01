@@ -106,10 +106,10 @@ class RunBetData:
 
         return round(percent_total/kline_num * 100,1)
 
-    def set_ratio(self):
+    def set_ratio(self,symbol):
         '''修改补仓止盈比率'''
         data_json = self._get_json_data()
-        atr_value = self.get_atr(self.get_cointype())
+        atr_value = self.get_atr(symbol)
         data_json['config']['double_throw_ratio'] = atr_value
         data_json['config']['profit_ratio'] = atr_value
         self._modify_json_data(data_json)
