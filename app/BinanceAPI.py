@@ -26,10 +26,14 @@ class BinanceAPI(object):
         path = "%s/ping" % self.BASE_URL_V3
         return requests.get(path, timeout=180, verify=True).json()
 
-    def get_ticker_price(self,market):
+    def get_ticker_price(self,market,rotate_count=0):
         path = "%s/ticker/price" % self.BASE_URL_V3
         params = {"symbol":market}
         res =  self._get_no_sign(path,params)
+        if res == 443 and rotate_count < 4: # 网络问题并且两次都访问都是443则报错停止运行
+            rotate_count += 1
+            time.sleep(20)
+            self.get_ticker_price(market,rotate_count)
         time.sleep(2)
         return float(res['price'])
 
@@ -39,14 +43,15 @@ class BinanceAPI(object):
         res =  self._get_no_sign(path,params)
         return res
 
-    def get_klines(self, market, interval, limit,startTime=None, endTime=None):
+    def get_klines(self, market, interval, limit,startTime=None, endTime=None,rotate_count = 0):
         path = "%s/klines" % self.BASE_URL
         params = None
         if startTime is None:
             params = {"symbol": market, "interval":interval, "limit":limit}
         else:
             params = {"symbol": market,"limit":limit, "interval":interval, "startTime":startTime, "endTime":endTime}
-        return self._get_no_sign(path, params)
+        res =  self._get_no_sign(path, params)
+        return res
 
     def buy_limit(self, market, quantity, rate):
         path = "%s/order" % self.BASE_URL_V3
@@ -152,12 +157,17 @@ class BinanceAPI(object):
         query = urlencode(params)
         url = "%s?%s" % (path, query)
         res = requests.get(url, timeout=180, verify=True).json()
-        if isinstance(res,dict):
-            if 'code' in res:
-                error_info = "报警：币种{coin},请求异常.错误原因{info}".format(coin=self.get_cointype(), info=str(res))
-                self.dingding_warn(error_info)
-
-        return res
+        
+        try:
+            res = requests.get(url, timeout=180, verify=True).json()
+            if isinstance(res,dict):
+                if 'code' in res:
+                    error_info = "报警：币种{coin},请求异常.错误原因{info}".format(coin=self.get_cointype(), info=str(res))
+                    self.dingding_warn(error_info)
+            return res
+        except Exception as e:
+            if str(e).find("443") != -1: # 网络错误不用报错
+                return 443
 
     def _sign(self, params={}):
         data = params.copy()
