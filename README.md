@@ -46,8 +46,62 @@ pip install requests
 
 3. 修改data/data.json配置文件  （参数详细解读->[一定要看](https://github.com/hengxuZ/binance-quantization/blob/master/dev-ReadMe.md)）
 ```
-python3 create_data.py 
-根据提示输入对应内容
+```
+由于本版本支持多币对，配置文件略有不同
+1.coinList中填入你要执行的币对，下方的该币对一一对应配置项
+{
+    "coinList": [
+        "ETHUSDT",
+        "BTCUSDT",
+        "BNBUSDT"
+    ],
+    "ETHUSDT": {                           # 每个币对象要一一对应
+        "runBet": {
+            "next_buy_price": 3800,        # 下次买入价
+            "grid_sell_price": 4000,       # 下次卖出价 （没有仓位，自动更新价格，不做卖出操作）
+            "step": 0,                    # 已经购入多少手（根据quantity推算）
+            "recorded_price": [           # 此项不用管，
+            ]
+        },
+        "config": {
+            "profit_ratio": 2.3,           # 此项不用管，根据4小时ART，20根k线计算
+            "double_throw_ratio": 2.3,     # 此项不用管，根据4小时ART，20根k线计算
+            "quantity": [                  # 每次要买入多少 (单次购买0.003个ETH)
+                0.003
+            ]
+        }
+    },
+    "BTCUSDT": {
+        "runBet": {
+            "next_buy_price": 49000.0,
+            "grid_sell_price": 50000.0,
+            "step": 0,
+            "recorded_price": []
+        },
+        "config": {
+            "profit_ratio": 1.7,
+            "double_throw_ratio": 1.7,
+            "quantity": [
+                0.001
+            ]
+        }
+    },
+    "BNBUSDT": {
+        "runBet": {
+            "next_buy_price": 450,
+            "grid_sell_price": 500,
+            "step": 0,
+            "recorded_price": []
+        },
+        "config": {
+            "profit_ratio": 2.0,
+            "double_throw_ratio": 2.0,
+            "quantity": [
+                0.02
+            ]
+        }
+    }
+}
 ```
 
 4. 运行主文件
@@ -68,29 +122,6 @@ python3 create_data.py
 
 - 第一版本现货账户保证有足够的U
    
-- 由于补仓比率是动态的，目前默认最小为5%。如果您认为过大，建议您修改文件夹data下的RunbetData.py文件
-```加粗的数值均可调整，适合你风险系数的比率
-    def set_ratio(self,symbol):
-        '''修改补仓止盈比率'''
-        data_json = self._get_json_data()
-        ratio_24hr = binan.get_ticker_24hour(symbol) #
-        index = abs(ratio_24hr)
-
-        if abs(ratio_24hr) >  **6** : # 今日24小时波动比率
-            if ratio_24hr > 0 : # 单边上涨，补仓比率不变
-                data_json['config']['profit_ratio'] =  **7** + self.get_step()/4  #
-                data_json['config']['double_throw_ratio'] = **5**
-            else: # 单边下跌
-                data_json['config']['double_throw_ratio'] =  **7** + self.get_step()/4
-                data_json['config']['profit_ratio'] =  **5**
-
-        else: # 系数内震荡行情
-
-            data_json['config']['double_throw_ratio'] = **5** + self.get_step() / 4
-            data_json['config']['profit_ratio'] = **5** + self.get_step() / 4
-        self._modify_json_data(data_json)
-```
-
 ### 钉钉预警
 
 如果您想使用钉钉通知，那么你需要创建一个钉钉群，然后加入自定义机器人。最后将机器人的token粘贴到authorization文件中的dingding_token
