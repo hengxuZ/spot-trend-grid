@@ -30,7 +30,7 @@ class BinanceAPI(object):
         path = "%s/ticker/price" % self.BASE_URL_V3
         params = {"symbol":market}
         res =  self._get_no_sign(path,params)
-        if res == 443 and rotate_count < 4: # 网络问题并且两次都访问都是443则报错停止运行
+        if res == 443 and rotate_count < 10: # 网络问题并且两次都访问都是443则报错停止运行
             rotate_count += 1
             time.sleep(20)
             self.get_ticker_price(market,rotate_count)
@@ -149,20 +149,20 @@ class BinanceAPI(object):
         res = requests.get(url, headers=header,timeout=30, verify=True).json()
         if isinstance(res,dict):
             if 'code' in res:
-                error_info = "报警：币种{coin},请求异常.错误原因{info}".format(coin=self.get_cointype(), info=str(res))
+                error_info = "报警：做多网格,请求异常.错误原因{info}".format(info=str(res))
                 self.dingding_warn(error_info)
         return res
 
     def _get_no_sign(self, path, params={}):
         query = urlencode(params)
         url = "%s?%s" % (path, query)
-        res = requests.get(url, timeout=180, verify=True).json()
+        # res = requests.get(url, timeout=10, verify=True).json()
         
         try:
-            res = requests.get(url, timeout=180, verify=True).json()
+            res = requests.get(url, timeout=10, verify=True).json()
             if isinstance(res,dict):
                 if 'code' in res:
-                    error_info = "报警：币种{coin},请求异常.错误原因{info}".format(coin=self.get_cointype(), info=str(res))
+                    error_info = "报警：做多网格,请求异常.错误原因{info}".format( info=str(res))
                     self.dingding_warn(error_info)
             return res
         except Exception as e:
@@ -190,7 +190,7 @@ class BinanceAPI(object):
 
         if isinstance(res,dict):
             if 'code' in res:
-                error_info = "报警：币种{coin},请求异常.错误原因{info}".format(coin=self.get_cointype(), info=str(res))
+                error_info = "报警：做多网格,请求异常.错误原因{info}".format( info=str(res))
                 self.dingding_warn(error_info)
 
         return res

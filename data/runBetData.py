@@ -28,36 +28,38 @@ class RunBetData:
 
     ####------下面为输出函数--------####
 
-
+    def get_coinList(self):
+        data_json = self._get_json_data()
+        return data_json["coinList"]
     
-    def get_buy_price(self):
+    def get_buy_price(self,symbol):
         data_json = self._get_json_data()
-        return data_json["runBet"]["next_buy_price"]
+        return data_json[symbol]["runBet"]["next_buy_price"]
 
 
-    def get_sell_price(self):
+    def get_sell_price(self,symbol):
         data_json = self._get_json_data()
-        return data_json["runBet"]["grid_sell_price"]
+        return data_json[symbol]["runBet"]["grid_sell_price"]
 
-    def get_cointype(self):
+    def get_cointype(self,symbol):
         data_json = self._get_json_data()
-        return data_json["config"]["cointype"]
+        return data_json[symbol]["config"]["cointype"]
 
-    def get_record_price(self):
+    def get_record_price(self,symbol):
         '''卖出后，step减一后，再读取上次买入的价格'''
         data_json = self._get_json_data()
-        cur_step = self.get_step() - 1
-        return data_json['runBet']['recorded_price'][cur_step]
+        cur_step = self.get_step(symbol) - 1
+        return data_json[symbol]['runBet']['recorded_price'][cur_step]
 
-    def get_quantity(self,exchange_method=True):
+    def get_quantity(self,symbol,exchange_method=True):
         '''
         :param exchange: True 代表买入，取买入的仓位 False：代表卖出，取卖出应该的仓位
         :return:
         '''
 
         data_json = self._get_json_data()
-        cur_step = data_json["runBet"]["step"] if exchange_method else data_json["runBet"]["step"] - 1 # 买入与卖出操作对应的仓位不同
-        quantity_arr = data_json["config"]["quantity"]
+        cur_step = data_json[symbol]["runBet"]["step"] if exchange_method else data_json[symbol]["runBet"]["step"] - 1 # 买入与卖出操作对应的仓位不同
+        quantity_arr = data_json[symbol]["config"]["quantity"]
 
         quantity = None
         if cur_step < len(quantity_arr): # 当前仓位 > 设置的仓位 取最后一位
@@ -66,35 +68,31 @@ class RunBetData:
             quantity = quantity_arr[-1]
         return quantity
 
-    def get_step(self):
+    def get_step(self,symbol):
         data_json = self._get_json_data()
-        return data_json["runBet"]["step"]
+        return data_json[symbol]["runBet"]["step"]
 
-    def remove_record_price(self):
+    def remove_record_price(self,symbol):
         '''记录交易价格'''
         data_json = self._get_json_data()
-        del data_json['runBet']['recorded_price'][-1]
+        del data_json[symbol]['runBet']['recorded_price'][-1]
         self._modify_json_data(data_json)
 
-    def get_ratio_coefficient(self):
-        '''获取倍率系数'''
-        data_json = self._get_json_data()
-        return data_json['config']['RatioCoefficient']
 
-    def get_profit_ratio(self):
+    def get_profit_ratio(self,symbol):
         '''获取补仓比率'''
         data_json = self._get_json_data()
-        return data_json['config']['profit_ratio']
+        return data_json[symbol]['config']['profit_ratio']
 
-    def get_double_throw_ratio(self):
+    def get_double_throw_ratio(self,symbol):
         '''获取止盈比率'''
         data_json = self._get_json_data()
-        return data_json['config']['double_throw_ratio']
+        return data_json[symbol]['config']['double_throw_ratio']
 
-    def set_record_price(self,value):
+    def set_record_price(self,symbol,value):
         '''记录交易价格'''
         data_json = self._get_json_data()
-        data_json['runBet']['recorded_price'].append(value)
+        data_json[symbol]['runBet']['recorded_price'].append(value)
         self._modify_json_data(data_json)
 
     def get_atr(self,symbol,interval='4h',kline_num=20):
@@ -110,26 +108,26 @@ class RunBetData:
         '''修改补仓止盈比率'''
         data_json = self._get_json_data()
         atr_value = self.get_atr(symbol)
-        data_json['config']['double_throw_ratio'] = atr_value
-        data_json['config']['profit_ratio'] = atr_value
+        data_json[symbol]['config']['double_throw_ratio'] = atr_value
+        data_json[symbol]['config']['profit_ratio'] = atr_value
         self._modify_json_data(data_json)
 
 
     # 买入后，修改 补仓价格 和 网格平仓价格以及步数
-    def modify_price(self, deal_price,step,market_price):
+    def modify_price(self,symbol, deal_price,step,market_price):
         data_json = self._get_json_data()
-        data_json["runBet"]["next_buy_price"] = round(deal_price * (1 - data_json["config"]["double_throw_ratio"] / 100), 6) # 默认保留6位小数
-        data_json["runBet"]["grid_sell_price"] = round(deal_price * (1 + data_json["config"]["profit_ratio"] / 100), 6)
+        data_json[symbol]["runBet"]["next_buy_price"] = round(deal_price * (1 - data_json[symbol]["config"]["double_throw_ratio"] / 100), 6) # 默认保留6位小数
+        data_json[symbol]["runBet"]["grid_sell_price"] = round(deal_price * (1 + data_json[symbol]["config"]["profit_ratio"] / 100), 6)
         #  如果修改的价格满足立刻卖出则，再次更改
-        if data_json["runBet"]["next_buy_price"] > market_price:
-            data_json["runBet"]["next_buy_price"] = round( market_price * (1 - data_json["config"]["double_throw_ratio"] / 100), 6)
-        elif data_json["runBet"]["grid_sell_price"] < market_price:
-            data_json["runBet"]["grid_sell_price"] = round(market_price * (1 + data_json["config"]["profit_ratio"] / 100), 6)
+        if data_json[symbol]["runBet"]["next_buy_price"] > market_price:
+            data_json[symbol]["runBet"]["next_buy_price"] = round( market_price * (1 - data_json[symbol]["config"]["double_throw_ratio"] / 100), 6)
+        elif data_json[symbol]["runBet"]["grid_sell_price"] < market_price:
+            data_json[symbol]["runBet"]["grid_sell_price"] = round(market_price * (1 + data_json[symbol]["config"]["profit_ratio"] / 100), 6)
 
-        data_json["runBet"]["step"] = step
+        data_json[symbol]["runBet"]["step"] = step
         self._modify_json_data(data_json)
-        print("修改后的补仓价格为:{double}。修改后的网格价格为:{grid}".format(double=data_json["runBet"]["next_buy_price"],
-                                                           grid=data_json["runBet"]["grid_sell_price"]))
+        print("修改后的补仓价格为:{double}。修改后的网格价格为:{grid}".format(double=data_json[symbol]["runBet"]["next_buy_price"],
+                                                           grid=data_json[symbol]["runBet"]["grid_sell_price"]))
 
 
 
