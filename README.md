@@ -109,6 +109,7 @@ pip install requests
 # nohup python3 run.py > run.log &  #后台挂载 程序买卖、异常会通过钉钉通知(推荐使用钉钉模式启动👍)
 ```
 
+
 如果您不想那么麻烦，又是python、linux 服务器。可以使用下面链接注册派网。体验网格交易
 ![派网注册](https://www.pionex.cc/zh-CN/sign/ref/gP7byIO9)（通过该链接注册的用户，加我立马返现5元）
 
@@ -119,6 +120,8 @@ pip install requests
     - 手续费足够低
     - 确保购买的币种完整(如果没有bnb,比如购买1个eth,其中你只会得到0.999。其中0.001作为手续费支付了)
 
+- 动态百分比可调整(参考atr计算)
+    - data/runBetData 里的 get_atr(‘时间维度’,‘参考k线数量’)
 
 - 第一版本现货账户保证有足够的U
    
