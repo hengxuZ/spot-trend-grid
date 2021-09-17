@@ -30,7 +30,7 @@ class BinanceAPI(object):
         path = "%s/ticker/price" % self.BASE_URL_V3
         params = {"symbol":market}
         res =  self._get_no_sign(path,params)
-        if res == 443 and rotate_count < 10: # 网络问题并且两次都访问都是443则报错停止运行
+        if res == 443 and rotate_count < 20: # 网络问题并且20次都访问都是443则报错停止运行
             rotate_count += 1
             time.sleep(20)
             self.get_ticker_price(market,rotate_count)
