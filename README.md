@@ -46,7 +46,6 @@ pip install requests
 
 3. 修改data/data.json配置文件  （参数详细解读->[一定要看](https://github.com/hengxuZ/binance-quantization/blob/master/dev-ReadMe.md)）
 ```
-```
 由于本版本支持多币对，配置文件略有不同
 1.coinList中填入你要执行的币对，下方的该币对一一对应配置项
 {
