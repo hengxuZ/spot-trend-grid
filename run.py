@@ -37,7 +37,7 @@ class Run_Main():
 
 
                 if grid_buy_price >= cur_market_price and index.calcAngle(coinType,"5m",False,right_size):   # 是否满足买入价
-                    res = msg.buy_limit_msg(coinType, quantity,cur_market_price)
+                    res = msg.buy_market_msg(coinType, quantity)
                     if 'orderId' in res: # 挂单成功
                         success_price = float(res['fills'][0]['price'])
                         runbet.set_ratio(coinType)
@@ -54,7 +54,7 @@ class Run_Main():
                         last_price = runbet.get_record_price(coinType)
                         sell_amount = runbet.get_quantity(coinType,False)
                         porfit_usdt = (cur_market_price - last_price) * sell_amount
-                        res = msg.sell_limit_msg(coinType, runbet.get_quantity(coinType,False),grid_sell_price,porfit_usdt)
+                        res = msg.sell_market_msg(coinType, runbet.get_quantity(coinType,False),porfit_usdt)
                         if 'orderId' in res: #True 代表下单成功
                             runbet.set_ratio(coinType) #启动动态改变比率
                             runbet.modify_price(coinType,runbet.get_record_price(coinType), step - 1,cur_market_price)
