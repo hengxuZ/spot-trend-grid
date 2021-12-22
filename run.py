@@ -36,7 +36,7 @@ class Run_Main():
                 [grid_buy_price,grid_sell_price,quantity,step,cur_market_price,right_size] = self.pre_data(coinType)
 
 
-                if grid_buy_price >= cur_market_price and index.calcAngle(coinType,"5m",False,right_size):   # 是否满足买入价
+                if grid_buy_price >= cur_market_price:#and index.calcAngle(coinType,"5m",False,right_size):   # 是否满足买入价
                     res = msg.buy_market_msg(coinType, quantity)
                     if 'orderId' in res: # 挂单成功
                         success_price = float(res['fills'][0]['price'])
@@ -47,7 +47,7 @@ class Run_Main():
                     else:
                         break
 
-                elif grid_sell_price < cur_market_price and index.calcAngle(coinType,"5m",True,right_size):  # 是否满足卖出价
+                elif grid_sell_price < cur_market_price :#and index.calcAngle(coinType,"5m",True,right_size):  # 是否满足卖出价
                     if step==0: # setp=0 防止踏空，跟随价格上涨
                         runbet.modify_price(coinType,grid_sell_price,step,cur_market_price)
                     else:
@@ -77,3 +77,4 @@ if __name__ == "__main__":
 # 调试看报错运行下面，正式运行用上面       
 # if __name__ == "__main__":
 #     instance = Run_Main()
+#。    instance.loop_run()
