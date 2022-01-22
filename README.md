@@ -5,7 +5,14 @@ v2适合震荡上涨的行情
 
 如果您对后面的行情看跌，建议您使用 v4版 [合约开空趋势网格](https://github.com/hengxuZ/future-short-grid)
 
-作者 🔗：https://linktr.ee/erwaplayblockchain （更多视频内容）
+作者 🔗：https://linktr.ee/erwaplayblockchain 
+
+视频教程⬆️ 尽在YouTube  discord群链接🔗 ⬆️⬆️
+
+欢迎👏加入discord社群目标：打造一个频道，监控全网。别人知道的消息，你也能够第一时间发现。
+前期免费🆓，后期付费进群。收入的费用将成立DAO基金。基金用于购买白名单，nft，奖励对社区有贡献的小伙伴！
+
+![discord群](https://s4.ax1x.com/2022/01/22/7fCeVH.png)
 ---
 
 ### 介绍
