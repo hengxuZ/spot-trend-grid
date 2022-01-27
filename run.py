@@ -41,8 +41,10 @@ class Run_Main():
                     if 'orderId' in res: # 挂单成功
                         success_price = float(res['fills'][0]['price'])
                         runbet.set_ratio(coinType)
+                        time.sleep(1)
                         runbet.set_record_price(coinType,success_price)
-                        runbet.modify_price(coinType,success_price, step+1,cur_market_price) #修改data.json中价格、当前步数
+                        time.sleep(1)
+                        runbet.modify_price(coinType,cur_market_price, step+1,cur_market_price) #修改data.json中价格、当前步数
                         time.sleep(60*2) # 挂单后，停止运行1分钟
                     else:
                         break
@@ -57,7 +59,9 @@ class Run_Main():
                         res = msg.sell_market_msg(coinType, runbet.get_quantity(coinType,False),porfit_usdt)
                         if 'orderId' in res: #True 代表下单成功
                             runbet.set_ratio(coinType) #启动动态改变比率
+                            time.sleep(1)
                             runbet.modify_price(coinType,runbet.get_record_price(coinType), step - 1,cur_market_price)
+                            time.sleep(1)
                             runbet.remove_record_price(coinType)
                             time.sleep(60*1)  # 挂单后，停止运行1分钟
                         else:
