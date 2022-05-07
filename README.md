@@ -1,4 +1,14 @@
 
+如果您想和我一样通过币圈赚到第一桶金？
+ 
+那么你需要 时间+充足的精力+一点点💰
+ 
+准备好了吗？ 那就进入下方的表格吧（开始你的区块链任务的之旅）
+https://docs.google.com/spreadsheets/d/1szV11my3F11HG2kVUt1Bo2a4P7u19fWr4U8mqYzMP_U/edit?usp=sharing
+
+---
+
+
 ### 🎉第二版本🎉 （现货趋势网格）
 
 v2适合震荡上涨的行情
