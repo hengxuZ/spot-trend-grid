@@ -73,7 +73,7 @@ class RunBetData:
         return data_json[symbol]["runBet"]["step"]
 
     def remove_record_price(self,symbol):
-        '''记录交易价格'''
+        '''删除交易价格'''
         data_json = self._get_json_data()
         del data_json[symbol]['runBet']['recorded_price'][-1]
         self._modify_json_data(data_json)
